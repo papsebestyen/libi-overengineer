@@ -1,6 +1,7 @@
 import pandas as pd
 import altair as alt
 import numpy as np
+import streamlit as st
 
 historicaldf_forplot = pd.read_parquet(data_path / f"data_{date_range}_day.parquet")
 
@@ -46,8 +47,11 @@ rules = alt.Chart(source).mark_rule(color='gray').encode(
 )
 
 # Put the five layers into a chart and bind the data
-alt.layer(
+c = alt.layer(
     line, selectors, points, rules, text
 ).properties(
     width=600, height=300
 )
+
+st.title("Igénytelenség vs igényesség az ajándékozás terén")
+st.altair_chart(c, use_container_width=True)
