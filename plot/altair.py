@@ -2,10 +2,11 @@ import pandas as pd
 import altair as alt
 import numpy as np
 import streamlit as st
+from pathlib import Path
 
-historicaldf_forplot = pd.read_parquet(data_path / f"data_{date_range}_day.parquet")
+historicaldf_forplot = pd.read_parquet(Path('./data/data_30_day.parquet'))
 
-historicaldf_forplot = pd.melt(historicaldf.reset_index(), id_vars='date', value_vars=['gift','mug','diy'], var_name=None, value_name='searches', col_level=None, ignore_index=True)
+historicaldf_forplot = pd.melt(historicaldf_forplot.reset_index(), id_vars='date', value_vars=['gift','mug','diy'], var_name=None, value_name='searches', col_level=None, ignore_index=True)
 
 source = historicaldf_forplot.sort_values(by='date')[0:4999]
 # Create a selection that chooses the nearest point & selects based on x-value
