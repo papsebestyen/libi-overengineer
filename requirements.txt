@@ -3,3 +3,4 @@ pytrends
 invoke
 pyarrow
 altair
+streamlit
