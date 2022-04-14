@@ -8,7 +8,7 @@ import pandas as pd
 # ahhoz hogy működjön indítsd el az api.py-t (ip és port lehet más lesz)
 source = pd.DataFrame(
     requests.get(
-        "http://127.0.0.1:5000/data?year=2022&month=04&day=14&day_delta=31&group_hours=1"
+        "http://44.202.14.43/data?year=2022&month=04&day=15&day_delta=31&group_hours=1"
     ).json()
 ).assign(date=lambda _df: pd.to_datetime(_df["date"]))
 

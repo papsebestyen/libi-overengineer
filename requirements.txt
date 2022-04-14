@@ -4,3 +4,5 @@ invoke
 pyarrow
 altair
 streamlit
+flask
+gunicorn
