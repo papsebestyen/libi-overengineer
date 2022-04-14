@@ -4,6 +4,9 @@ from plot.process_data import load_data
 
 app = Flask(__name__)
 
+@app.route('/')
+def hello_world():
+	return 'I love overengineering!'
 
 @app.route("/data", methods=["GET"])
 def get_data():
