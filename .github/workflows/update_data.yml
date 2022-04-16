@@ -22,4 +22,4 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Get new data
         run: |
-          inv download-data
+          inv upload-new-data

@@ -13,7 +13,7 @@ def download_data(cli):
 
 @task
 def upload_new_data(cli):
-    from src.download.get_data import get_data
+    from src.get_data import get_data
     from tempfile import TemporaryDirectory
     from datetime import datetime
     from src.s3 import FileStorage

@@ -4,11 +4,16 @@ import streamlit as st
 import requests
 import pandas as pd
 
-# Ez az apiból húzza be a dolgokat egyből, innen kéne felépíteni a frontendet
-# ahhoz hogy működjön indítsd el az api.py-t (ip és port lehet más lesz)
+# Ez az már apiból húzza be a dolgokat egyből, innen kéne felépíteni a frontendet.
+# Ha a legfrissebb adatot akarod (amit az actions hajnalban már lekapott), akkor a mai dátumot kell meagni az apinak.
+# A háttérben a process_data.py fájl process_data függvénye fut, onnan meg tudod érteni az egészet.
+from datetime import datetime
+now = datetime.now()
+
+
 source = pd.DataFrame(
     requests.get(
-        "http://44.202.14.43/data?year=2022&month=04&day=15&day_delta=31&group_hours=1"
+        f"http://44.202.14.43/data?year={now.year}&month={now.month}&day={now.day}&day_delta=31&group_hours=1"
     ).json()
 ).assign(date=lambda _df: pd.to_datetime(_df["date"]))
 
