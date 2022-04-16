@@ -1,10 +1,12 @@
 from pathlib import Path
 from datetime import datetime, timedelta
+from s3 import FileStorage
 
 import pandas as pd
 
+storage = FileStorage()
 
-def load_data(
+def process_data(
     year: int = None,
     month: int = None,
     day: int = None,
@@ -18,7 +20,7 @@ def load_data(
     day = day or now.day
 
     return (
-        pd.read_parquet(Path(f"../data/{year:02}-{month:02}-{day:01}_365.parquet"))
+        pd.read_parquet(storage.download_bytes(f"{year:02}-{month:02}-{day:01}.parquet"))
         .loc[lambda _df: _df.index >= (_df.index.max() - timedelta(days=day_delta)), :]
         .resample(f"{group_hours}H")
         .mean()
