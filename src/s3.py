@@ -1,6 +1,6 @@
 import boto3
 import io
-from config import (
+from .config import (
     AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY,
     IBM_S3_ENDPOINT,

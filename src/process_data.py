@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from s3 import FileStorage
+from .s3 import FileStorage
 
 import pandas as pd
 

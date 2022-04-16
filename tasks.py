@@ -2,7 +2,7 @@ from invoke import task
 
 @task
 def download_data(cli):
-    from src.download.get_data import get_data
+    from src.get_data import get_data
     from pathlib import Path
     from datetime import datetime
 
