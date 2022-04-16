@@ -22,7 +22,7 @@ jobs:
           python -m pip install -r requirements.txt
       - name: Get new data
         env: 
-            DROPBOX_REFRESH_TOKEN: ${{ secrets.DROPBOX_REFRESH_TOKEN }}
-            INGATLAN_APP_SECRET: ${{ secrets.INGATLAN_APP_SECRET }}
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           inv upload-new-data
