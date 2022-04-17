@@ -10,13 +10,17 @@ import pandas as pd
 from datetime import datetime
 now = datetime.now()
 
+#option = st.selectbox(
+     #'Which date would you like to look at?',
+     #('2022', '2021', '2020'))
+
+#st.write('You selected:', option)
 
 source = pd.DataFrame(
     requests.get(
         f"http://44.202.14.43/data?year={now.year}&month={now.month}&day={now.day}&day_delta=31&group_hours=1"
     ).json()
 ).assign(date=lambda _df: pd.to_datetime(_df["date"]))
-
 
 
 # Create a selection that chooses the nearest point & selects based on x-value
