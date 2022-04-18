@@ -14,11 +14,28 @@ now = datetime.now()
      #'Which date would you like to look at?',
      #('2022', '2021', '2020'))
 
+date_option = st.sidebar.date_input("last date")
 #st.write('You selected:', option)
+date_option = str(date_option)
+year = date_option[0:4]
 
+if date_option[5] == '0':
+    month = date_option[6] 
+elif  date_option[5] != '0':
+    month = date_option[5:7]
+
+if date_option[8] == '0':
+    day = date_option[9] 
+elif  date_option[8] != '0':
+    day = date_option[8:10]
+
+period_option = st.sidebar.number_input("period",1,36,1,1)
+period_option = str(period_option)
+
+# date input, ha vmi kisebb akkor menjen egy minimum date-re
 source = pd.DataFrame(
     requests.get(
-        f"http://44.202.14.43/data?year={now.year}&month={now.month}&day={now.day}&day_delta=31&group_hours=1"
+        f"http://44.202.14.43/data?year={year}&month={month}&day={day}&day_delta={period_option}&group_hours=1"
     ).json()
 ).assign(date=lambda _df: pd.to_datetime(_df["date"]))
 
