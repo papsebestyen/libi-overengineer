@@ -19,7 +19,7 @@ def process_data(
     day = day or now.day
 
     return (
-        pd.read_parquet(storage.download_bytes(f"{year:02}-{month:02}-{day:01}.parquet"))
+        pd.read_parquet(storage.download_bytes(f"{year:02}-{month:02}-{day:02}.parquet"))
         .loc[lambda _df: _df.index >= (_df.index.max() - timedelta(days=day_delta)), :]
         .resample(f"{group_hours}H")
         .mean()
