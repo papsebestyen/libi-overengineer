@@ -1,15 +1,24 @@
 from invoke import task
 
+
+@task
+def lint(ctx):
+    ctx.run(f"black src")
+    ctx.run(f"isort src --profile black")
+    ctx.run(f"flake8 src")
+
+
 @task
 def download_data(cli):
     from src.get_data import get_data
     from pathlib import Path
     from datetime import datetime
 
-    data_path = Path('data')
+    data_path = Path("data")
     data_path.mkdir(exist_ok=True)
 
     get_data(datetime.now(), data_path)
+
 
 @task
 def upload_new_data(cli):

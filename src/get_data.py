@@ -3,7 +3,6 @@ from pathlib import Path
 
 from pytrends.request import TrendReq
 
-
 kw_list = ["gift", "mug", "diy"]
 
 

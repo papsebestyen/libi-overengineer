@@ -1,12 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
 
 from .process_data import process_data
 
 app = Flask(__name__)
 
-@app.route('/')
+
+@app.route("/")
 def hello_world():
-	return 'I love overengineering!'
+    return "I love overengineering!"
+
 
 @app.route("/data", methods=["GET"])
 def get_data():

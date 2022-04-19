@@ -1,41 +1,32 @@
-import altair as alt
+from datetime import datetime
+
+import pandas as pd
+import requests
 import streamlit as st
 
-import requests
-import pandas as pd
+import altair as alt
 
-# Ez az már apiból húzza be a dolgokat egyből, innen kéne felépíteni a frontendet.
-# Ha a legfrissebb adatot akarod (amit az actions hajnalban már lekapott), akkor a mai dátumot kell meagni az apinak.
-# A háttérben a process_data.py fájl process_data függvénye fut, onnan meg tudod érteni az egészet.
-from datetime import datetime
-now = datetime.now()
+min_date = datetime(2022, 4, 16)
+max_date = datetime.now()
+date_option = st.sidebar.date_input(
+    "Válassz egy dátumot", min_value=min_date, max_value=max_date
+)
 
-#option = st.selectbox(
-     #'Which date would you like to look at?',
-     #('2022', '2021', '2020'))
-
-date_option = st.sidebar.date_input("last date")
-#st.write('You selected:', option)
-date_option = str(date_option)
-year = date_option[0:4]
-
-if date_option[5] == '0':
-    month = date_option[6] 
-elif  date_option[5] != '0':
-    month = date_option[5:7]
-
-if date_option[8] == '0':
-    day = date_option[9] 
-elif  date_option[8] != '0':
-    day = date_option[8:10]
-
-period_option = st.sidebar.number_input("period",1,36,1,1)
-period_option = str(period_option)
+period_option = st.sidebar.number_input(
+    "Válassz egy szakaszt", min_value=1, max_value=365, value=31, step=1
+)
+hour_grouping_option = st.sidebar.number_input(
+    "Válassz egy csoportosítást",
+    min_value=1,
+    max_value=period_option * 24,
+    value=24,
+    step=1,
+)
 
 # date input, ha vmi kisebb akkor menjen egy minimum date-re
 source = pd.DataFrame(
     requests.get(
-        f"http://44.202.14.43/data?year={year}&month={month}&day={day}&day_delta={period_option}&group_hours=1"
+        f"http://44.202.14.43/data?year={date_option.year:02}&month={date_option.month:02}&day={date_option.day:02}&day_delta={period_option}&group_hours={hour_grouping_option}"
     ).json()
 ).assign(date=lambda _df: pd.to_datetime(_df["date"]))
 
