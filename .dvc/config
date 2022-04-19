@@ -1,0 +1,5 @@
+[core]
+    remote = myremote
+['remote "myremote"']
+    url = s3://libi/dvcstore
+    endpointurl = https://s3.eu-de.cloud-object-storage.appdomain.cloud

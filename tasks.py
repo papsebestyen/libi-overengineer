@@ -1,3 +1,5 @@
+import imp
+from fastapi import File
 from invoke import task
 
 
@@ -36,3 +38,12 @@ def upload_new_data(cli):
         storage.upload_bytes(file.read_bytes(), file.name)
 
     tmp_dir.cleanup()
+
+@task
+def retrain_forecaster(cli):
+    from src.forecast import train_forecaster
+    import pickle
+    from pathlib import Path
+    forecaster = train_forecaster()
+    Path('src/models/forecaster.pickle').write_bytes(pickle.dumps(forecaster))
+
