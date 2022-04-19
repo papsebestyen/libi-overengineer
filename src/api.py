@@ -1,5 +1,7 @@
-from flask import Flask, jsonify, request
 from json import loads
+
+from flask import Flask, jsonify, request
+
 from .process_data import get_query_data, get_raw_data, get_simplicity_data
 
 app = Flask(__name__)
