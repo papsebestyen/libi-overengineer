@@ -60,7 +60,7 @@ def process_simplicity_data(
         df.assign(
             simplicity=lambda _df: _df["mug"] / _df["gift"],
         )
-        .drop(columns=["gift", "mug", "diy"])
+        .drop(columns=["gift", "mug", "diy", 'isPartial'])
         .loc[lambda _df: _df.index >= (_df.index.max() - timedelta(days=day_delta)), :]
         .resample(f"{group_hours}H")
         .mean()

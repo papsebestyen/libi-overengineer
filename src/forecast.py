@@ -1,3 +1,8 @@
+import pickle
+from pathlib import Path
+from src.process_data import process_simplicity_data, get_raw_data
+from src.config import FORECAST_WINDOW
+import pandas as pd
 from datetime import datetime
 
 import pandas as pd
@@ -19,3 +24,9 @@ def train_forecaster(year: int = None, month: int = None, day: int = None):
 
     forecaster.fit(y=df["simplicity"])
     return forecaster
+
+
+def get_prediction():
+    df = process_simplicity_data(get_raw_data())
+    forecaster = pickle.loads(Path("src/models/forecaster.pickle").read_bytes())
+    return forecaster.predict(steps=FORECAST_WINDOW, last_window=df["simplicity"])
