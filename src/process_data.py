@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
+from .config import FORECAST_WINDOW
 from .s3 import FileStorage
 
 storage = FileStorage()
@@ -60,25 +61,16 @@ def get_simplicity_data(
     group_hours: int = 1,
     with_prediction: bool = False,
 ) -> pd.DataFrame:
-    df = (
-        df.assign(
-            simplicity=lambda _df: _df["mug"] / _df["gift"],
-        )
-        .drop(columns=["gift", "mug", "diy", "isPartial"])
-        .loc[
-            lambda _df: _df.index
-            >= (_df.index.max() - timedelta(days=day_delta)),
-            :,
-        ]
-        .resample(f"{group_hours}H")
-        .mean()
-    )
+    df = df.assign(
+        simplicity=lambda _df: _df["mug"] / _df["gift"],
+    ).drop(columns=["gift", "mug", "diy", "isPartial"])
     if with_prediction:
         storage = FileStorage()
         prediction = pd.read_parquet(
             storage.download_bytes("prediction.parquet")
         )
         df = df.join(prediction.to_frame(), how="outer")
+        day_delta += FORECAST_WINDOW / 24
     return (
         df.reset_index()
         .rename(columns={"index": "date"})
@@ -86,4 +78,12 @@ def get_simplicity_data(
             id_vars="date",
             value_name="searches",
         )
+        .set_index("date")
+        .loc[
+            lambda _df: _df.index
+            >= (_df.index.max() - timedelta(days=day_delta)),
+            :,
+        ]
+        .resample(f"{group_hours}H")
+        .mean()
     )
