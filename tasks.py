@@ -40,3 +40,11 @@ def upload_prediction(cli):
     storage.upload_bytes(
         prediction.to_frame().to_parquet(), "prediction.parquet"
     )
+
+
+@task
+def deploy_api(cli):
+    cli.run("sudo systemctl start libi")
+    cli.run("sudo systemctl enable libi")
+    cli.run("sudo systemctl start nginx")
+    cli.run("sudo systemctl enable nginx")
