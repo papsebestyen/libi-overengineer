@@ -39,8 +39,7 @@ def get_query_data(
 
     return (
         df.loc[
-            lambda _df: _df.index
-            >= (_df.index.max() - timedelta(days=day_delta)),
+            lambda _df: _df.index >= (_df.index.max() - timedelta(days=day_delta)),
             :,
         ]
         .resample(f"{group_hours}H")
@@ -61,16 +60,24 @@ def get_simplicity_data(
     group_hours: int = 1,
     with_prediction: bool = False,
 ) -> pd.DataFrame:
-    df = df.assign(
-        simplicity=lambda _df: _df["mug"] / _df["gift"],
-    ).drop(columns=["gift", "mug", "diy", "isPartial"])
+    df = (
+        df.assign(
+            simplicity=lambda _df: _df["mug"] / _df["gift"],
+        )
+        .drop(columns=["gift", "mug", "diy", "isPartial"])
+        .loc[
+            lambda _df: _df.index >= (_df.index.max() - timedelta(days=day_delta)),
+            :,
+        ]
+        .resample(f"{group_hours}H")
+        .mean()
+    )
     if with_prediction:
         storage = FileStorage()
-        prediction = pd.read_parquet(
-            storage.download_bytes("prediction.parquet")
+        prediction = pd.read_parquet(storage.download_bytes("prediction.parquet"))
+        df = df.join(prediction.resample(f"{group_hours}H").mean(), how="outer").assign(
+            pred=lambda _df: _df["pred"].mask(~_df["simplicity"].isna())
         )
-        df = df.join(prediction.to_frame(), how="outer")
-        day_delta += FORECAST_WINDOW / 24
     return (
         df.reset_index()
         .rename(columns={"index": "date"})
@@ -78,12 +85,5 @@ def get_simplicity_data(
             id_vars="date",
             value_name="searches",
         )
-        .set_index("date")
-        .loc[
-            lambda _df: _df.index
-            >= (_df.index.max() - timedelta(days=day_delta)),
-            :,
-        ]
-        .resample(f"{group_hours}H")
-        .mean()
+        .dropna()
     )

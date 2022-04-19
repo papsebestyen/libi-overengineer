@@ -38,7 +38,7 @@ def upload_prediction(cli):
     storage = FileStorage()
     prediction = get_prediction()
     storage.upload_bytes(
-        prediction.to_frame().to_parquet(), "prediction.parquet"
+        prediction.to_frame().rename_axis('date').to_parquet(), "prediction.parquet"
     )
 
 
