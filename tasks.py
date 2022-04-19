@@ -43,7 +43,10 @@ def upload_prediction(cli):
 
 
 @task
-def deploy_api(cli):
+def deploy_api(cli, with_stop= False):
+    if with_stop:
+        cli.run("sudo systemctl stop libi")
+        cli.run("sudo systemctl stop nginx")
     cli.run("sudo systemctl start libi")
     cli.run("sudo systemctl enable libi")
     cli.run("sudo systemctl status libi")
