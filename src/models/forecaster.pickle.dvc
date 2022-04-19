@@ -1,4 +1,4 @@
 outs:
-- md5: 25bd1cef01bd3d07d3838e9160498ecf
-  size: 64681169
+- md5: 64d90e5006e05003d9094cd5c15661a1
+  size: 64720081
   path: forecaster.pickle
