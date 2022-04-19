@@ -8,3 +8,4 @@ flask
 gunicorn
 boto3
 skforecast
+dvc
