@@ -1,19 +1,20 @@
-from invoke import task
-from src.forecast import train_forecaster, get_prediction
 import pickle
-from pathlib import Path
-from src.get_data import get_data
-from tempfile import TemporaryDirectory
 from datetime import datetime
-from src.s3 import FileStorage
 from pathlib import Path
+from tempfile import TemporaryDirectory
+
+from invoke import task
+
+from src.forecast import get_prediction, train_forecaster
+from src.get_data import get_data
+from src.s3 import FileStorage
 
 
 @task
 def lint(ctx):
-    ctx.run(f"black src")
-    ctx.run(f"isort src --profile black")
-    ctx.run(f"flake8 src")
+    ctx.run("black . -l 79")
+    ctx.run("isort . --profile black")
+    ctx.run("flake8 . --max-line-length=79")
 
 
 @task
@@ -27,12 +28,15 @@ def upload_data(cli):
 
 
 @task
-def retrain_forecaster(cli):
+def retrain_model(cli):
     forecaster = train_forecaster()
     Path("src/models/forecaster.pickle").write_bytes(pickle.dumps(forecaster))
+
 
 @task
 def upload_prediction(cli):
     storage = FileStorage()
     prediction = get_prediction()
-    storage.upload_bytes(prediction.to_frame().to_parquet(), 'prediction.parquet')
+    storage.upload_bytes(
+        prediction.to_frame().to_parquet(), "prediction.parquet"
+    )

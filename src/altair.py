@@ -15,6 +15,7 @@ date_option = st.sidebar.date_input(
 period_option = st.sidebar.number_input(
     "Válassz egy szakaszt", min_value=1, max_value=365, value=31, step=1
 )
+
 hour_grouping_option = st.sidebar.number_input(
     "Válassz egy csoportosítást",
     min_value=1,
@@ -26,7 +27,8 @@ hour_grouping_option = st.sidebar.number_input(
 # date input, ha vmi kisebb akkor menjen egy minimum date-re
 source = pd.DataFrame(
     requests.get(
-        f"http://44.202.14.43/data?year={date_option.year:02}&month={date_option.month:02}&day={date_option.day:02}&day_delta={period_option}&group_hours={hour_grouping_option}"
+        f"http://44.202.14.43/query_data?year={date_option.year:02}&month={date_option.month:02}&day={date_option.day:02}\
+            &day_delta={period_option}&group_hours={hour_grouping_option}"
     ).json()
 ).assign(date=lambda _df: pd.to_datetime(_df["date"]))
 
@@ -77,7 +79,9 @@ rules = (
 )
 
 # Put the five layers into a chart and bind the data
-c = alt.layer(line, selectors, points, rules, text).properties(width=600, height=300)
+c = alt.layer(line, selectors, points, rules, text).properties(
+    width=600, height=300
+)
 
 st.title("Igénytelenség vs igényesség az ajándékozás terén")
 st.altair_chart(c, use_container_width=True)

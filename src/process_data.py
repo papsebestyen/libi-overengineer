@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
-from .s3 import FileStorage
 
 import pandas as pd
+
+from .s3 import FileStorage
 
 storage = FileStorage()
 
@@ -28,7 +29,7 @@ def get_raw_data(
     )
 
 
-def process_query_data(
+def get_query_data(
     df,
     day_delta: int = 365,
     group_hours: int = 1,
@@ -37,7 +38,9 @@ def process_query_data(
 
     return (
         df.loc[
-            lambda _df: _df.index >= (_df.index.max() - timedelta(days=day_delta)), :
+            lambda _df: _df.index
+            >= (_df.index.max() - timedelta(days=day_delta)),
+            :,
         ]
         .resample(f"{group_hours}H")
         .mean()
@@ -51,17 +54,36 @@ def process_query_data(
     )
 
 
-def process_simplicity_data(
+def get_simplicity_data(
     df,
     day_delta: int = 365,
     group_hours: int = 1,
+    with_prediction: bool = False,
 ) -> pd.DataFrame:
-    return (
+    df = (
         df.assign(
             simplicity=lambda _df: _df["mug"] / _df["gift"],
         )
-        .drop(columns=["gift", "mug", "diy", 'isPartial'])
-        .loc[lambda _df: _df.index >= (_df.index.max() - timedelta(days=day_delta)), :]
+        .drop(columns=["gift", "mug", "diy", "isPartial"])
+        .loc[
+            lambda _df: _df.index
+            >= (_df.index.max() - timedelta(days=day_delta)),
+            :,
+        ]
         .resample(f"{group_hours}H")
         .mean()
+    )
+    if with_prediction:
+        storage = FileStorage()
+        prediction = pd.read_parquet(
+            storage.download_bytes("prediction.parquet")
+        )
+        df = df.join(prediction.to_frame(), how="outer")
+    return (
+        df.reset_index()
+        .rename(columns={"index": "date"})
+        .melt(
+            id_vars="date",
+            value_name="searches",
+        )
     )
