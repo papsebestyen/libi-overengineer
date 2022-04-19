@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-
+from json import loads
 from .process_data import get_query_data, get_raw_data, get_simplicity_data
 
 app = Flask(__name__)
@@ -35,7 +35,7 @@ def get_simplicity():
     day = args.get("day", default=None, type=int)
     day_delta = args.get("day_delta", default=365, type=int)
     group_hours = args.get("group_hours", default=1, type=int)
-    with_prediction = args.get("with_prediction", default=False, type=bool)
+    with_prediction = args.get("with_prediction", default=False, type=loads)
 
     df = get_raw_data(year=year, month=month, day=day)
     return jsonify(
