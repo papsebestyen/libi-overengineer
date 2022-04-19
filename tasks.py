@@ -38,12 +38,13 @@ def upload_prediction(cli):
     storage = FileStorage()
     prediction = get_prediction()
     storage.upload_bytes(
-        prediction.to_frame().rename_axis('date').to_parquet(), "prediction.parquet"
+        prediction.to_frame().rename_axis("date").to_parquet(),
+        "prediction.parquet",
     )
 
 
 @task
-def deploy_api(cli, with_stop= False):
+def deploy_api(cli, with_stop=False):
     if with_stop:
         cli.run("sudo systemctl stop libi")
         cli.run("sudo systemctl stop nginx")

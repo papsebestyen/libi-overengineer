@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
-from .config import FORECAST_WINDOW
 from .s3 import FileStorage
 
 storage = FileStorage()
@@ -39,7 +38,8 @@ def get_query_data(
 
     return (
         df.loc[
-            lambda _df: _df.index >= (_df.index.max() - timedelta(days=day_delta)),
+            lambda _df: _df.index
+            >= (_df.index.max() - timedelta(days=day_delta)),
             :,
         ]
         .resample(f"{group_hours}H")
@@ -66,7 +66,8 @@ def get_simplicity_data(
         )
         .drop(columns=["gift", "mug", "diy", "isPartial"])
         .loc[
-            lambda _df: _df.index >= (_df.index.max() - timedelta(days=day_delta)),
+            lambda _df: _df.index
+            >= (_df.index.max() - timedelta(days=day_delta)),
             :,
         ]
         .resample(f"{group_hours}H")
@@ -74,10 +75,12 @@ def get_simplicity_data(
     )
     if with_prediction:
         storage = FileStorage()
-        prediction = pd.read_parquet(storage.download_bytes("prediction.parquet"))
-        df = df.join(prediction.resample(f"{group_hours}H").mean(), how="outer").assign(
-            pred=lambda _df: _df["pred"].mask(~_df["simplicity"].isna())
+        prediction = pd.read_parquet(
+            storage.download_bytes("prediction.parquet")
         )
+        df = df.join(
+            prediction.resample(f"{group_hours}H").mean(), how="outer"
+        ).assign(pred=lambda _df: _df["pred"].mask(~_df["simplicity"].isna()))
     return (
         df.reset_index()
         .rename(columns={"index": "date"})

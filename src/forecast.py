@@ -41,6 +41,8 @@ def get_prediction(year: int = None, month: int = None, day: int = None):
         .asfreq("1H")
     )
 
-    forecaster = pickle.loads(Path("src/models/forecaster.pickle").read_bytes())
+    forecaster = pickle.loads(
+        Path("src/models/forecaster.pickle").read_bytes()
+    )
 
     return forecaster.predict(steps=FORECAST_WINDOW, last_window=series)
