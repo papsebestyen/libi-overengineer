@@ -46,5 +46,7 @@ def upload_prediction(cli):
 def deploy_api(cli):
     cli.run("sudo systemctl start libi")
     cli.run("sudo systemctl enable libi")
+    cli.run("sudo systemctl status libi")
     cli.run("sudo systemctl start nginx")
     cli.run("sudo systemctl enable nginx")
+    cli.run("sudo systemctl status nginx")
