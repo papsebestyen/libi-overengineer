@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run src/altair.py
+web: sh setup.sh && streamlit run src/dashboard.py
