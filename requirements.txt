@@ -1,11 +1,2 @@
-pandas
-pytrends
-invoke
-pyarrow
 altair
 streamlit
-flask
-gunicorn
-boto3
-skforecast
-dvc[s3]

@@ -1,0 +1,9 @@
+pandas
+pytrends
+invoke
+pyarrow
+flask
+gunicorn
+boto3
+skforecast
+dvc[s3]
